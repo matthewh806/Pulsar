@@ -39,23 +39,8 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     fixtureDef.friction = 0.3f;
     circleBody->CreateFixture(&fixtureDef);
     
-    b2PolygonShape polygonShape;
-    
-    b2BodyDef polygonBodyDef;
-    polygonBodyDef.type = b2_staticBody;
-    polygonBodyDef.position.Set(getWidth() * 0.5f, getHeight() * 0.5f - 40.0);
-    b2Body* polygonBody = mWorld.CreateBody(&polygonBodyDef);
-    
-    b2FixtureDef polygonFixtureDef;
-    polygonFixtureDef.shape = &polygonShape;
-    polygonShape.SetAsBox(40.0, 1.0, b2Vec2(0.0, 0.0), 0.0);
-    polygonBody->CreateFixture(&polygonFixtureDef);
-    polygonShape.SetAsBox(40.0, 1.0, b2Vec2(0.0, 80.0), 0.0);
-    polygonBody->CreateFixture(&polygonFixtureDef);
-    polygonShape.SetAsBox(1.0, 40.0, b2Vec2(-40.0, 40.), 0.0);
-    polygonBody->CreateFixture(&polygonFixtureDef);
-    polygonShape.SetAsBox(1.0, 40.0, b2Vec2(40.0, 40.0), 0.0);
-    polygonBody->CreateFixture(&polygonFixtureDef);
+    auto const radius = 120.0f;
+    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 3, radius);
     
     startTimer(100);
 }
@@ -79,4 +64,39 @@ void PulsarAudioProcessorEditor::paint (Graphics& g)
 
 void PulsarAudioProcessorEditor::resized()
 {
+}
+
+//==============================================================================
+b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nSides, float32 radius)
+{
+    b2PolygonShape polygonShape;
+    
+    b2BodyDef polygonBodyDef;
+    polygonBodyDef.type = b2_staticBody;
+    polygonBodyDef.position.Set(x, y);
+    b2Body* polygonBody = mWorld.CreateBody(&polygonBodyDef);
+    
+    b2FixtureDef polygonFixtureDef;
+    polygonFixtureDef.shape = &polygonShape;
+    
+    jassert (nSides > 1);
+    
+    Point<float32> center { 0, 0 };
+    auto angleBetweenPoints = MathConstants<float>::twoPi / static_cast<float>(nSides);
+    float startAngle = 0.0;
+    
+    for(int i = 0; i < nSides; ++i)
+    {
+        auto const angle = startAngle + i * angleBetweenPoints;
+        auto const nextAngle = angle + angleBetweenPoints;
+        
+        juce::Point<float> const p = { center.x + radius * std::sin(angle), center.y + radius * std::cos(angle) };
+        juce::Point<float> const p_next = { center.x + radius * std::sin(nextAngle), center.y + radius * std::cos(nextAngle) };
+        auto const boxCenter = b2Vec2((p.getX() + p_next.getX()) * 0.5f, (p.getY() + p_next.getY()) * 0.5f);
+        
+        polygonShape.SetAsBox(radius, 1.0f, boxCenter, p.getAngleToPoint(p_next) - MathConstants<float>::halfPi);
+        polygonBody->CreateFixture(&polygonFixtureDef);
+    }
+    
+    return polygonBody;
 }

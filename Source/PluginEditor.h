@@ -33,6 +33,8 @@ public:
     }
 
 private:
+    b2Body* createPolygon(float32 x, float32 y, int32 nSides, float32 radius);
+    
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     PulsarAudioProcessor& processor;
