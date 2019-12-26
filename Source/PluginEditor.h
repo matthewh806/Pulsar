@@ -33,7 +33,7 @@ public:
     }
 
 private:
-    b2Body* createPolygon(float32 x, float32 y, int32 nSides, float32 radius);
+    b2Body* createPolygon(float32 x, float32 y, int32 nSides, float32 radius, float startAngle = 0.0);
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -41,7 +41,7 @@ private:
     
     DrawablePath mShape;
     
-    b2Vec2 mGravity { 0.0f, 10.0f };
+    b2Vec2 mGravity { 0.0f, 1.0f };
     b2World mWorld { mGravity };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulsarAudioProcessorEditor)

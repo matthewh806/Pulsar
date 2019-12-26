@@ -26,7 +26,7 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     
     b2CircleShape circleShape;
     circleShape.m_p.Set(getWidth() * 0.5f, getHeight() * 0.5f);
-    circleShape.m_radius = 2.0;
+    circleShape.m_radius = 4.0;
     
     b2BodyDef circleBodyDef;
     circleBodyDef.type = b2_dynamicBody;
@@ -35,11 +35,12 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    fixtureDef.density = 0.75f;
+    fixtureDef.restitution = 1.0f;
+    fixtureDef.friction = 0.0f;
     circleBody->CreateFixture(&fixtureDef);
     
-    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 6, 120.0f);
+    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 4, 120.0f, MathConstants<float>::pi / 4.0f);
     
     startTimer(100);
 }
@@ -66,7 +67,7 @@ void PulsarAudioProcessorEditor::resized()
 }
 
 //==============================================================================
-b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nSides, float32 radius)
+b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nSides, float32 radius, float startAngle)
 {
     b2PolygonShape polygonShape;
     
@@ -77,16 +78,14 @@ b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nS
     
     b2FixtureDef polygonFixtureDef;
     polygonFixtureDef.shape = &polygonShape;
+    polygonFixtureDef.restitution = 0.0f;
     
     jassert (nSides > 1);
     
     Point<float32> center { 0, 0 };
     auto const angleBetweenPoints = MathConstants<float>::twoPi / static_cast<float>(nSides);
-    float startAngle = 0.0;
     
     auto const sideLength = 2 * radius * std::sin(MathConstants<float>::pi / static_cast<float>(nSides));
-    std::cout << "Radius: " << radius << ", Side Length: " << sideLength << std::endl;
-    
     for(int i = 0; i < nSides; ++i)
     {
         auto const angle = startAngle + i * angleBetweenPoints;
