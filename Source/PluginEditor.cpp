@@ -39,8 +39,7 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     fixtureDef.friction = 0.3f;
     circleBody->CreateFixture(&fixtureDef);
     
-    auto const radius = 120.0f;
-    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 6, radius);
+    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 6, 120.0f);
     
     startTimer(100);
 }
@@ -60,8 +59,6 @@ void PulsarAudioProcessorEditor::paint (Graphics& g)
     Box2DRenderer box2DRenderer;
     const Rectangle<float> targetArea { static_cast<float>(getX()), static_cast<float>(getY()), static_cast<float>(getWidth()), static_cast<float>(getHeight()) };
     box2DRenderer.render(g, mWorld, getX(), getY(), getRight(), getBottom(), targetArea);
-    
-    g.drawEllipse(getWidth() * 0.5f - 120.0f, getHeight() * 0.5 - 120.0f, 240.0f, 240.0f, 1);
 }
 
 void PulsarAudioProcessorEditor::resized()
@@ -84,8 +81,11 @@ b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nS
     jassert (nSides > 1);
     
     Point<float32> center { 0, 0 };
-    auto angleBetweenPoints = MathConstants<float>::twoPi / static_cast<float>(nSides);
+    auto const angleBetweenPoints = MathConstants<float>::twoPi / static_cast<float>(nSides);
     float startAngle = 0.0;
+    
+    auto const sideLength = 2 * radius * std::sin(MathConstants<float>::pi / static_cast<float>(nSides));
+    std::cout << "Radius: " << radius << ", Side Length: " << sideLength << std::endl;
     
     for(int i = 0; i < nSides; ++i)
     {
@@ -97,7 +97,7 @@ b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nS
         auto const boxCenter = b2Vec2((p.getX() + p_next.getX()) * 0.5f, (p.getY() + p_next.getY()) * 0.5f);
         auto const boxAngle = std::atan2(p_next.y - p.y, p_next.x - p.x);
         
-        polygonShape.SetAsBox(radius, 1.0f, boxCenter, boxAngle);
+        polygonShape.SetAsBox(sideLength * 0.5f, 1.0f, boxCenter, boxAngle);
         polygonBody->CreateFixture(&polygonFixtureDef);
     }
     
