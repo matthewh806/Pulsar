@@ -40,7 +40,7 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     circleBody->CreateFixture(&fixtureDef);
     
     auto const radius = 120.0f;
-    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 3, radius);
+    createPolygon(getWidth() * 0.5f, getHeight() * 0.5f, 6, radius);
     
     startTimer(100);
 }
@@ -60,6 +60,8 @@ void PulsarAudioProcessorEditor::paint (Graphics& g)
     Box2DRenderer box2DRenderer;
     const Rectangle<float> targetArea { static_cast<float>(getX()), static_cast<float>(getY()), static_cast<float>(getWidth()), static_cast<float>(getHeight()) };
     box2DRenderer.render(g, mWorld, getX(), getY(), getRight(), getBottom(), targetArea);
+    
+    g.drawEllipse(getWidth() * 0.5f - 120.0f, getHeight() * 0.5 - 120.0f, 240.0f, 240.0f, 1);
 }
 
 void PulsarAudioProcessorEditor::resized()
@@ -93,8 +95,9 @@ b2Body* PulsarAudioProcessorEditor::createPolygon(float32 x, float32 y, int32 nS
         juce::Point<float> const p = { center.x + radius * std::sin(angle), center.y + radius * std::cos(angle) };
         juce::Point<float> const p_next = { center.x + radius * std::sin(nextAngle), center.y + radius * std::cos(nextAngle) };
         auto const boxCenter = b2Vec2((p.getX() + p_next.getX()) * 0.5f, (p.getY() + p_next.getY()) * 0.5f);
+        auto const boxAngle = std::atan2(p_next.y - p.y, p_next.x - p.x);
         
-        polygonShape.SetAsBox(radius, 1.0f, boxCenter, p.getAngleToPoint(p_next) - MathConstants<float>::halfPi);
+        polygonShape.SetAsBox(radius, 1.0f, boxCenter, boxAngle);
         polygonBody->CreateFixture(&polygonFixtureDef);
     }
     
