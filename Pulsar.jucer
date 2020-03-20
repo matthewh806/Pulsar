@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="zKWxzZ" name="Pulsar" projectType="audioplug" jucerVersion="5.4.5"
+<JUCERPROJECT id="zKWxzZ" name="Pulsar" projectType="audioplug" jucerVersion="5.4.7"
               pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn">
   <MAINGROUP id="jDf2Fa" name="Pulsar">
     <GROUP id="{6283231E-3872-EBD3-C15F-1EDA5CFF6714}" name="Source">
