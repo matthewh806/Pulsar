@@ -149,10 +149,19 @@ void Polygon::setAngularVelocity(float angularVelocity)
     mPolygonBody->SetAngularVelocity(angularVelocity);
 }
 
-PulsarWorld::PulsarWorld(juce::Rectangle<float> worldRect, const b2Vec2& gravity)
-: b2World(gravity), mWorldRect(worldRect)
+PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity)
+: mParent(parent), mWorld(gravity), mWorldRect(worldRect)
 {
+    startTimer(60);
     
+    b2Vec2 polygonPos = {mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f};
+    mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, 6, static_cast<float>(pixelsToMeters(120.0)));
+    
+    mWorld.SetContactListener(this);
+
+    mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.3f, mWorldRect.getHeight() * 0.5f}, pixelsToMeters(2.0)});
+    mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f}, pixelsToMeters(8.0)});
+    mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.7f, mWorldRect.getHeight() * 0.5f}, pixelsToMeters(4.0)});
 }
 
 Rectangle<float> const PulsarWorld::getRect()
@@ -173,6 +182,16 @@ float const PulsarWorld::getHeight()
 void PulsarWorld::setRect(Rectangle<float> rect)
 {
     mWorldRect = rect;
+}
+
+void PulsarWorld::BeginContact(b2Contact* contact)
+{
+//    std::cout << "Contact begin" << std::endl;
+}
+
+void PulsarWorld::EndContact(b2Contact* contact)
+{
+//    std::cout << "Contact end" << std::endl;
 }
 
 PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
@@ -201,16 +220,6 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     }
     
     mWorld.setRect({0, 0, pixelsToMeters(static_cast<float>(getWidth())), pixelsToMeters(static_cast<float>(getHeight()))});
-    
-    b2Vec2 polygonPos = {mWorld.getWidth() * 0.5f, mWorld.getHeight() * 0.5f};
-    mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, 6, static_cast<float>(pixelsToMeters(120.0)));
-
-    mBalls.push_back(Ball{mWorld, pixelsToMeters(getWidth() * 0.3f, getHeight() * 0.5f), pixelsToMeters(2.0)});
-    mBalls.push_back(Ball{mWorld, pixelsToMeters(getWidth() * 0.5f, getHeight() * 0.5f), pixelsToMeters(8.0)});
-    mBalls.push_back(Ball{mWorld, pixelsToMeters(getWidth() * 0.7f, getHeight() * 0.5f), pixelsToMeters(4.0)});
-    
-    mWorld.SetContactListener(this);
-    startTimer(60);
 }
 
 PulsarAudioProcessorEditor::~PulsarAudioProcessorEditor()
@@ -226,7 +235,7 @@ void PulsarAudioProcessorEditor::paint (Graphics& g)
     g.setColour (Colours::white);
     
     Box2DRenderer box2DRenderer;
-    box2DRenderer.render(g, mWorld, mWorld.getRect().getX(), mWorld.getRect().getY(), mWorld.getRect().getRight(), mWorld.getRect().getBottom(), getLocalBounds().toFloat());
+    box2DRenderer.render(g, mWorld.getWorld(), mWorld.getRect().getX(), mWorld.getRect().getY(), mWorld.getRect().getRight(), mWorld.getRect().getBottom(), getLocalBounds().toFloat());
 }
 
 void PulsarAudioProcessorEditor::resized()
@@ -260,16 +269,6 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
 }
 
 //==============================================================================
-void PulsarAudioProcessorEditor::BeginContact(b2Contact* contact)
-{
-//    std::cout << "Contact begin" << std::endl;
-}
-
-void PulsarAudioProcessorEditor::EndContact(b2Contact* contact)
-{
-//    std::cout << "Contact end" << std::endl;
-}
-
 void PulsarAudioProcessorEditor::setMidiInput(const String& identifier)
 {
     auto list = MidiInput::getAvailableDevices();
@@ -277,7 +276,7 @@ void PulsarAudioProcessorEditor::setMidiInput(const String& identifier)
     
     if(!mDeviceManager.isMidiInputDeviceEnabled(identifier))
     {
-        mDeviceManager.setMidiInputEnabled(identifier, true);
+        mDeviceManager.setMidiInputDeviceEnabled(identifier, true);
     }
     
     mDeviceManager.addMidiInputDeviceCallback(identifier, this);

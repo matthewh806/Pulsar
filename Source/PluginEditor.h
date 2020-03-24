@@ -37,21 +37,6 @@ private:
     float mRadius;
 };
 
-class PulsarWorld : public b2World
-{
-public:
-    PulsarWorld(juce::Rectangle<float> worldRect, const b2Vec2& gravity);
-    
-    Rectangle<float> const getRect();
-    float const getWidth();
-    float const getHeight();
-    
-    void setRect(Rectangle<float> rect);
-    
-private:
-    Rectangle<float> mWorldRect;
-};
-
 class Polygon
 {
 public:
@@ -75,7 +60,46 @@ private:
     b2PolygonShape mPolygonShape;
 };
 
-class PulsarAudioProcessorEditor  : public AudioProcessorEditor, Timer, b2ContactListener, private MidiInputCallback, private AsyncUpdater
+class PulsarWorld : public Timer, b2ContactListener
+{
+public:
+    PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity);
+    
+    Rectangle<float> const getRect();
+    float const getWidth();
+    float const getHeight();
+    
+    b2World& getWorld()
+    {
+        return mWorld;
+    }
+    
+    void setRect(Rectangle<float> rect);
+    
+    //b2ContactListener
+    /// Called when two fixtures begin to touch.
+    void BeginContact(b2Contact* contact) override;
+
+    /// Called when two fixtures cease to touch.
+    void EndContact(b2Contact* contact) override;
+    
+    void timerCallback() override
+    {
+        mWorld.Step(0.02, 8, 3);
+        mParent.repaint();
+    }
+    
+private:
+    Component& mParent;
+    
+    b2World mWorld;
+    Rectangle<float> mWorldRect;
+    
+    std::vector<Ball> mBalls;
+    std::unique_ptr<Polygon> mPolygon;
+};
+
+class PulsarAudioProcessorEditor  : public AudioProcessorEditor, Timer, private MidiInputCallback, private AsyncUpdater
 {
 public:
     PulsarAudioProcessorEditor (PulsarAudioProcessor&);
@@ -86,37 +110,25 @@ public:
     void paint (Graphics&) override;
     void resized() override;
     
+    void timerCallback() override
+    {
+        
+    }
+    
     // juce::MidiInputCallback
     void handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message) override;
     
     // juce::AsyncUpdater
     void handleAsyncUpdate() override;
-    
-    void timerCallback() override
-    {
-        mWorld.Step(0.02, 8, 3);
-        repaint();
-    }
 
 private:
-    
-    //b2ContactListener
-    /// Called when two fixtures begin to touch.
-    void BeginContact(b2Contact* contact) override;
-
-    /// Called when two fixtures cease to touch.
-    void EndContact(b2Contact* contact) override;
-    
     void setMidiInput(const String& identifier);
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     PulsarAudioProcessor& processor;
     
-    PulsarWorld mWorld {{ 0.0f, 0.0f, 4.0f, 4.0f }, {0.0f, 10.0f}};
-    
-    std::vector<Ball> mBalls;
-    std::unique_ptr<Polygon> mPolygon;
+    PulsarWorld mWorld {*this, { 0.0f, 0.0f, 4.0f, 4.0f }, {0.0f, 10.0f}};
     
     CriticalSection mMidiMonitorLock;
     Array<MidiMessage> mIncomingMessages;
