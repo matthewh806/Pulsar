@@ -13,7 +13,7 @@
 
 //==============================================================================
 
-static float pixelsPerMeter = 1.0;
+static const float pixelsPerMeter = 100;
 
 static float pixelsToMeters(float vPixel)
 {
@@ -45,8 +45,8 @@ Ball::Ball(b2World& world, b2Vec2 pos, double radius)
     b2Body* circleBody = world.CreateBody(&mCircleBodyDef);
     
     mFixtureDef.shape = &mCircleShape;
-    mFixtureDef.density = 0.5f;
-    mFixtureDef.restitution = 1.0f;
+    mFixtureDef.density = 0.1f;
+    mFixtureDef.restitution = 0.75f;
     mFixtureDef.friction = 0.0f;
     circleBody->CreateFixture(&mFixtureDef);
 }
@@ -68,6 +68,8 @@ Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radius, float 
     
     auto const angleBetweenPoints = MathConstants<float>::twoPi / static_cast<float>(nSides);
     auto const sideLength = 2 * radius * std::sin(MathConstants<float>::pi / static_cast<float>(nSides));
+    
+    b2Vec2 vertices[nSides];
     for(int i = 0; i < nSides; ++i)
     {
         auto const angle = startAngle + i * angleBetweenPoints;
@@ -78,9 +80,11 @@ Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radius, float 
         b2Vec2 const boxCenter((p.x + p_next.x) * 0.5f, (p.y + p_next.y) * 0.5f);
         auto const boxAngle = std::atan2(p_next.y - p.y, p_next.x - p.x);
         
-        polygonShape.SetAsBox(sideLength * 0.5f, 1.0f, boxCenter, boxAngle);
+        polygonShape.SetAsBox(sideLength * 0.5f, 0.01f, boxCenter, boxAngle);
         mPolygonBody->CreateFixture(&polygonFixtureDef);
     }
+    
+    mPolygonBody->CreateFixture(&polygonFixtureDef);
 }
 
 b2Body* Polygon::getBody()
@@ -109,25 +113,27 @@ float const PulsarWorld::getHeight()
     return mWorldRect.getHeight();
 }
 
+void PulsarWorld::setRect(Rectangle<float> rect)
+{
+    mWorldRect = rect;
+}
+
 PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
 : AudioProcessorEditor (&p)
 , processor (p)
-, mPolygon(mWorld, {mWorld.getWidth() * 0.5f, mWorld.getHeight() * 0.5f}, 3, 1.2, MathConstants<float>::pi / 4.0f)
 {
     setSize (400, 400);
-    pixelsPerMeter = static_cast<float>(getWidth()) / mWorld.getRect().getWidth();
+    mWorld.setRect({0, 0, pixelsToMeters(static_cast<float>(getWidth())), pixelsToMeters(static_cast<float>(getHeight()))});
     
-    mShape.setFill(Colours::transparentWhite);
-    mShape.setStrokeFill(Colours::pink);
-    mShape.setStrokeThickness(2.0);
-    addAndMakeVisible(mShape);
-    
+    b2Vec2 polygonPos = {mWorld.getWidth() * 0.5f, mWorld.getHeight() * 0.5f};
+    mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, 6, static_cast<float>(pixelsToMeters(120.0)));
+
     mBalls.push_back(Ball{mWorld, pixelsToMeters(getWidth() * 0.3f, getHeight() * 0.5f), pixelsToMeters(2.0)});
     mBalls.push_back(Ball{mWorld, pixelsToMeters(getWidth() * 0.5f, getHeight() * 0.5f), pixelsToMeters(8.0)});
     mBalls.push_back(Ball{mWorld, pixelsToMeters(getWidth() * 0.7f, getHeight() * 0.5f), pixelsToMeters(4.0)});
     
     mWorld.SetContactListener(this);
-    startTimer(100);
+    startTimer(60);
 }
 
 PulsarAudioProcessorEditor::~PulsarAudioProcessorEditor()
@@ -153,10 +159,10 @@ void PulsarAudioProcessorEditor::resized()
 //==============================================================================
 void PulsarAudioProcessorEditor::BeginContact(b2Contact* contact)
 {
-    std::cout << "Contact begin" << std::endl;
+//    std::cout << "Contact begin" << std::endl;
 }
 
 void PulsarAudioProcessorEditor::EndContact(b2Contact* contact)
 {
-    std::cout << "Contact end" << std::endl;
+//    std::cout << "Contact end" << std::endl;
 }

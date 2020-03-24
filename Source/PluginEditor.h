@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 
+#include <memory>
 //==============================================================================
 /**
 */
@@ -37,6 +38,8 @@ public:
     Rectangle<float> const getRect();
     float const getWidth();
     float const getHeight();
+    
+    void setRect(Rectangle<float> rect);
     
 private:
     Rectangle<float> mWorldRect;
@@ -66,7 +69,7 @@ public:
     
     void timerCallback() override
     {
-        mWorld.Step(getTimerInterval(), 8, 3);
+        mWorld.Step(0.02, 8, 3);
         repaint();
     }
 
@@ -83,12 +86,10 @@ private:
     // access the processor object that created it.
     PulsarAudioProcessor& processor;
     
-    DrawablePath mShape;
-    
     PulsarWorld mWorld {{ 0.0f, 0.0f, 4.0f, 4.0f }, {0.0f, 10.0f}};
     
     std::vector<Ball> mBalls;
-    Polygon mPolygon;
+    std::unique_ptr<Polygon> mPolygon;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulsarAudioProcessorEditor)
 };
