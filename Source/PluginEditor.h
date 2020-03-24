@@ -21,13 +21,20 @@
 class Ball
 {
 public:
-    Ball(b2World& world, b2Vec2 pos, double radius);
+    Ball(b2World& world, b2Vec2 pos, double radius = 1.0, float density = 1.0, float restitution = 0.75);
     ~Ball() = default;
     
+    void startContact();
+    void endContact();
+    
+    bool isContacting();
+
+    b2Body* getBody();
+    
 private:
-    b2CircleShape mCircleShape;
-    b2BodyDef mCircleBodyDef;
-    b2FixtureDef mFixtureDef;
+    bool mContacting = false;
+    b2Body* mBody;
+    float mRadius;
 };
 
 class PulsarWorld : public b2World
@@ -52,8 +59,20 @@ public:
     
     b2Body* getBody();
     
+    float getRadius();
+    bool testPoint(b2Vec2 const &p);
+    
+    void incrementRotation();
+    void increaseEdgeSeparation(int amount);
+    
+    float getAngularVelocity();
+    void setAngularVelocity(float angularVelocity);
+    
 private:
     b2Body* mPolygonBody;
+    float mRadius;
+    int32 mNumSides;
+    b2PolygonShape mPolygonShape;
 };
 
 class PulsarAudioProcessorEditor  : public AudioProcessorEditor, Timer, b2ContactListener
