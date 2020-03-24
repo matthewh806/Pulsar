@@ -1,0 +1,53 @@
+/*
+  ==============================================================================
+
+    Ball.cpp
+    Created: 25 Mar 2020 12:09:58am
+    Author:  Matthew
+
+  ==============================================================================
+*/
+
+#include "Ball.h"
+
+Ball::Ball(b2World& world, b2Vec2 pos, double radius, float density, float restitution)
+{
+    
+    b2CircleShape circleShape;
+    circleShape.m_p.Set(0, 0);
+    circleShape.m_radius = radius;
+    
+    b2BodyDef circleBodyDef;
+    circleBodyDef.type = b2_dynamicBody;
+    circleBodyDef.position.Set(pos.x, pos.y);
+    mBody = world.CreateBody(&circleBodyDef);
+    
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circleShape;
+    fixtureDef.density = density;
+    fixtureDef.restitution = restitution;
+    fixtureDef.friction = 0.0f;
+    mBody->CreateFixture(&fixtureDef);
+    
+    mBody->SetUserData(this);
+}
+
+void Ball::startContact()
+{
+    mContacting = true;
+}
+
+void Ball::endContact()
+{
+    mContacting = false;
+}
+
+bool Ball::isContacting()
+{
+    return mContacting;
+}
+
+b2Body* Ball::getBody()
+{
+    return mBody;
+}
