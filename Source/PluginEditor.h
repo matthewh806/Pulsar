@@ -75,7 +75,7 @@ private:
     b2PolygonShape mPolygonShape;
 };
 
-class PulsarAudioProcessorEditor  : public AudioProcessorEditor, Timer, b2ContactListener
+class PulsarAudioProcessorEditor  : public AudioProcessorEditor, Timer, b2ContactListener, private MidiInputCallback, private AsyncUpdater
 {
 public:
     PulsarAudioProcessorEditor (PulsarAudioProcessor&);
@@ -85,6 +85,12 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
+    
+    // juce::MidiInputCallback
+    void handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message) override;
+    
+    // juce::AsyncUpdater
+    void handleAsyncUpdate() override;
     
     void timerCallback() override
     {
@@ -101,6 +107,8 @@ private:
     /// Called when two fixtures cease to touch.
     void EndContact(b2Contact* contact) override;
     
+    void setMidiInput(const String& identifier);
+    
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     PulsarAudioProcessor& processor;
@@ -109,6 +117,15 @@ private:
     
     std::vector<Ball> mBalls;
     std::unique_ptr<Polygon> mPolygon;
+    
+    CriticalSection mMidiMonitorLock;
+    Array<MidiMessage> mIncomingMessages;
+    
+    AudioDeviceManager mDeviceManager;
+    Label mMidiInputLabel    { "Midi Input Label",  "MIDI Input:" };
+    ComboBox mMidiInputList;
+    int mLastInputIndex = 0;
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulsarAudioProcessorEditor)
 };
