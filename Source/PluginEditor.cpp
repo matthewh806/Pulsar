@@ -39,7 +39,7 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
         }
     }
     
-    mWorld.setRect({0, 0, Utils::pixelsToMeters(static_cast<float>(getWidth())), Utils::pixelsToMeters(static_cast<float>(getHeight()))});
+    mWorld.setRect({0, 0, Physics::Utils::pixelsToMeters(static_cast<float>(getWidth())), Physics::Utils::pixelsToMeters(static_cast<float>(getHeight()))});
 }
 
 PulsarAudioProcessorEditor::~PulsarAudioProcessorEditor()

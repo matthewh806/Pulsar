@@ -10,7 +10,7 @@
 
 #include "Ball.h"
 
-Ball::Ball(b2World& world, b2Vec2 pos, double radius, float density, float restitution)
+Physics::Ball::Ball(b2World& world, b2Vec2 pos, double radius, float density, float restitution)
 {
     
     b2CircleShape circleShape;
@@ -32,22 +32,22 @@ Ball::Ball(b2World& world, b2Vec2 pos, double radius, float density, float resti
     mBody->SetUserData(this);
 }
 
-void Ball::startContact()
+void Physics::Ball::startContact()
 {
     mContacting = true;
 }
 
-void Ball::endContact()
+void Physics::Ball::endContact()
 {
     mContacting = false;
 }
 
-bool Ball::isContacting()
+bool Physics::Ball::isContacting()
 {
     return mContacting;
 }
 
-b2Body* Ball::getBody()
+b2Body* Physics::Ball::getBody()
 {
     return mBody;
 }

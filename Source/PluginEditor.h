@@ -48,7 +48,7 @@ private:
     // access the processor object that created it.
     PulsarAudioProcessor& processor;
     
-    PulsarWorld mWorld {*this, { 0.0f, 0.0f, 4.0f, 4.0f }, {0.0f, 10.0f}};
+    Physics::PulsarWorld mWorld {*this, { 0.0f, 0.0f, 4.0f, 4.0f }, {0.0f, 10.0f}};
     
     CriticalSection mMidiMonitorLock;
     Array<MidiMessage> mIncomingMessages;

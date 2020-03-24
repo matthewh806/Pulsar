@@ -11,7 +11,7 @@
 #include "Polygon.h"
 #include "Utils.h"
 
-Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radius, float startAngle, b2Vec2 center)
+Physics::Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radius, float startAngle, b2Vec2 center)
 {
     mNumSides = nSides;
     
@@ -49,12 +49,12 @@ Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radius, float 
     mPolygonBody->CreateFixture(&polygonFixtureDef);
 }
 
-b2Body* Polygon::getBody()
+b2Body* Physics::Polygon::getBody()
 {
     return mPolygonBody;
 }
 
-void Polygon::increaseEdgeSeparation(int amount)
+void Physics::Polygon::increaseEdgeSeparation(int amount)
 {
     int idx = 0;
     for (b2Fixture* f = mPolygonBody->GetFixtureList(); f; f = f->GetNext())
@@ -73,12 +73,12 @@ void Polygon::increaseEdgeSeparation(int amount)
     }
 }
 
-float Polygon::getAngularVelocity()
+float Physics::Polygon::getAngularVelocity()
 {
     return mPolygonBody->GetAngularVelocity();
 }
 
-void Polygon::setAngularVelocity(float angularVelocity)
+void Physics::Polygon::setAngularVelocity(float angularVelocity)
 {
     mPolygonBody->SetAngularVelocity(angularVelocity);
 }

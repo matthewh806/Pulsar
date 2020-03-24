@@ -11,7 +11,7 @@
 #include "PulsarWorld.h"
 #include "Utils.h"
 
-PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity)
+Physics::PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity)
 : mParent(parent), mWorld(gravity), mWorldRect(worldRect)
 {
     startTimer(60);
@@ -26,32 +26,32 @@ PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, co
     mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.7f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(4.0)});
 }
 
-Rectangle<float> const PulsarWorld::getRect()
+Rectangle<float> const Physics::PulsarWorld::getRect()
 {
     return mWorldRect;
 }
 
-float const PulsarWorld::getWidth()
+float const Physics::PulsarWorld::getWidth()
 {
     return mWorldRect.getWidth();
 }
 
-float const PulsarWorld::getHeight()
+float const Physics::PulsarWorld::getHeight()
 {
     return mWorldRect.getHeight();
 }
 
-void PulsarWorld::setRect(Rectangle<float> rect)
+void Physics::PulsarWorld::setRect(Rectangle<float> rect)
 {
     mWorldRect = rect;
 }
 
-void PulsarWorld::BeginContact(b2Contact* contact)
+void Physics::PulsarWorld::BeginContact(b2Contact* contact)
 {
 //    std::cout << "Contact begin" << std::endl;
 }
 
-void PulsarWorld::EndContact(b2Contact* contact)
+void Physics::PulsarWorld::EndContact(b2Contact* contact)
 {
 //    std::cout << "Contact end" << std::endl;
 }
