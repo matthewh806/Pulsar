@@ -21,9 +21,9 @@ Physics::PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worl
     
     mWorld.SetContactListener(this);
 
-    mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.3f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(2.0)});
-    mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(8.0)});
-    mBalls.push_back(Ball{mWorld, {mWorldRect.getWidth() * 0.7f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(4.0)});
+    spawnBall({mWorldRect.getWidth() * 0.3f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(2.0));
+    spawnBall({mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(8.0));
+    spawnBall({mWorldRect.getWidth() * 0.7f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(4.0));
 }
 
 Rectangle<float> const Physics::PulsarWorld::getRect()
@@ -44,6 +44,19 @@ float const Physics::PulsarWorld::getHeight()
 void Physics::PulsarWorld::setRect(Rectangle<float> rect)
 {
     mWorldRect = rect;
+}
+
+void Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
+{
+    mBalls.push_back(Ball{mWorld, pos, radius});
+}
+
+void Physics::PulsarWorld::spawnBall()
+{
+    auto const x = mWorldRect.getWidth() * mRandom.nextFloat();
+    auto const y = mWorldRect.getHeight() * mRandom.nextFloat();
+    
+    spawnBall({x, y}, Utils::pixelsToMeters(mRandom.nextFloat() * 5));
 }
 
 void Physics::PulsarWorld::BeginContact(b2Contact* contact)

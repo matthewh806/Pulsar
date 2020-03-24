@@ -39,6 +39,9 @@ namespace Physics
         /// Called when two fixtures cease to touch.
         void EndContact(b2Contact* contact) override;
         
+        void spawnBall();
+        void spawnBall(b2Vec2 pos, float radius);
+        
         void timerCallback() override
         {
             mWorld.Step(0.02, 8, 3);
@@ -53,6 +56,8 @@ namespace Physics
         
         std::vector<Ball> mBalls;
         std::unique_ptr<Polygon> mPolygon;
+        
+        Random mRandom;
     };
 }
 
