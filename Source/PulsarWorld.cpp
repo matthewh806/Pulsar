@@ -19,6 +19,27 @@ Physics::PulsarWorld::PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<
 : mParent(parent), mWorld(gravity), mWorldRect(worldRect)
 {
     startTimer(60);
+    
+    b2BodyDef boundaryBodyDef;
+    boundaryBodyDef.type = b2_staticBody;
+    boundaryBodyDef.position.Set(0, 0);
+    mWorldBoundary = mWorld.CreateBody(&boundaryBodyDef);
+    
+    b2PolygonShape boundaryPolygonShape;
+    
+    b2FixtureDef borderFixtureDef;
+    borderFixtureDef.shape = &boundaryPolygonShape;
+    borderFixtureDef.isSensor = true;
+    
+    boundaryPolygonShape.SetAsBox(getRect().getWidth() * 0.5, Utils::pixelsToMeters(1), {static_cast<float32>((getRect().getWidth() * 0.5)), static_cast<float32>(getRect().getHeight())}, 0); // bottom
+    mWorldBoundary->CreateFixture(&borderFixtureDef);
+    boundaryPolygonShape.SetAsBox(getRect().getWidth() * 0.5, Utils::pixelsToMeters(1), {static_cast<float32>((getRect().getWidth() * 0.5)), static_cast<float32>(getRect().getY())}, 0); // top
+    mWorldBoundary->CreateFixture(&borderFixtureDef);
+    boundaryPolygonShape.SetAsBox(Utils::pixelsToMeters(1), getRect().getHeight() * 0.5, {static_cast<float32>((getRect().getX())), static_cast<float32>(getRect().getHeight() * 0.5)}, 0); // left
+    mWorldBoundary->CreateFixture(&borderFixtureDef);
+    boundaryPolygonShape.SetAsBox(Utils::pixelsToMeters(1), getRect().getHeight() * 0.5, {static_cast<float32>((getRect().getRight())), static_cast<float32>(getRect().getHeight() * 0.5)}, 0); // right
+    mWorldBoundary->CreateFixture(&borderFixtureDef);
+    
     createPolygon(6);
     
     mWorld.SetContactListener(this);

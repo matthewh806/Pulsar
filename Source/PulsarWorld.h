@@ -63,6 +63,8 @@ namespace Physics
         std::vector<Ball*> mBalls;
         std::unique_ptr<Polygon> mPolygon;
         
+        b2Body* mWorldBoundary;
+        
         Random mRandom;
     };
 }
