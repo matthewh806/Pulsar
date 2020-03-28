@@ -34,7 +34,6 @@ Physics::Ball::Ball(b2World& world, b2Vec2 pos, double radius, float density, fl
 
 Physics::Ball::~Ball()
 {
-    std::cout << "Destroying ball" << std::endl;
     mBody->GetWorld()->DestroyBody( mBody );
 }
 
