@@ -145,14 +145,17 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
 
 void PulsarAudioProcessorEditor::sendNoteOnMessage(int noteNumber, float velocity)
 {
-    auto message = MidiMessage::noteOn(mMidiOutputChannel, noteNumber, static_cast<uint8>(velocity));
-    message.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+    //! @todo: Use a midi buffer and do the timestamping properly...?
+    auto messageOn = MidiMessage::noteOn(mMidiOutputChannel, noteNumber, static_cast<uint8>(velocity));
+    messageOn.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
     
-    std::cout << "SendNoteOn: (ch, note, velocity): " << mMidiInputChannel << ", " << noteNumber << ", " << velocity << "\n";
+    auto messageOff = MidiMessage::noteOff (messageOn.getChannel(), messageOn.getNoteNumber());
+    messageOff.setTimeStamp (messageOn.getTimeStamp() + 0.1);
     
     if(mMidiOutput)
     {
-        mMidiOutput->sendMessageNow(message);
+        mMidiOutput->sendMessageNow(messageOn);
+        mMidiOutput->sendMessageNow(messageOff);
     }
 }
 
