@@ -40,6 +40,8 @@ public:
     
     // juce::AsyncUpdater
     void handleAsyncUpdate() override;
+    
+    void sendNoteOnMessage(int noteNumber, float velocity);
 
 private:
     void setMidiInput(const String& identifier);

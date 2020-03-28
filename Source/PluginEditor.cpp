@@ -113,15 +113,28 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
         messages.swapWith(mIncomingMessages);
     }
     
-//    String messageText;
     for(auto &m : messages)
     {
         std::cout << "Message: " + m.getDescription() << "\n";
         
         if(m.isNoteOn())
         {
-            mWorld.spawnBall();
+            auto* b = mWorld.spawnBall();
+            b->setMidiData(m.getNoteNumber(), m.getVelocity());
         }
+    }
+}
+
+void PulsarAudioProcessorEditor::sendNoteOnMessage(int noteNumber, float velocity)
+{
+    auto message = MidiMessage::noteOn(1, noteNumber, static_cast<uint8>(velocity));
+    message.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+    
+    std::cout << "SendNoteOn: (note, velocity): " << noteNumber << ", " << velocity << "\n";
+    
+    if(mMidiOutput)
+    {
+        mMidiOutput->sendMessageNow(message);
     }
 }
 

@@ -9,9 +9,10 @@
 */
 
 #include "PulsarWorld.h"
+#include "PluginEditor.h"
 #include "Utils.h"
 
-Physics::PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity)
+Physics::PulsarWorld::PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity)
 : mParent(parent), mWorld(gravity), mWorldRect(worldRect)
 {
     startTimer(60);
@@ -20,10 +21,6 @@ Physics::PulsarWorld::PulsarWorld(Component& parent, juce::Rectangle<float> worl
     mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, 6, static_cast<float>(Utils::pixelsToMeters(120.0)));
     
     mWorld.SetContactListener(this);
-
-    spawnBall({mWorldRect.getWidth() * 0.3f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(2.0));
-    spawnBall({mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(8.0));
-    spawnBall({mWorldRect.getWidth() * 0.7f, mWorldRect.getHeight() * 0.5f}, Utils::pixelsToMeters(4.0));
 }
 
 Rectangle<float> const Physics::PulsarWorld::getRect()
@@ -46,25 +43,46 @@ void Physics::PulsarWorld::setRect(Rectangle<float> rect)
     mWorldRect = rect;
 }
 
-void Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
+Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
 {
-    mBalls.push_back(Ball{mWorld, pos, radius});
+    Ball* b = new Ball{mWorld, pos, radius};
+    mBalls.push_back(b);
+    
+    return b;
 }
 
-void Physics::PulsarWorld::spawnBall()
+Physics::Ball* Physics::PulsarWorld::spawnBall()
 {
     auto const x = mWorldRect.getWidth() * mRandom.nextFloat();
     auto const y = mWorldRect.getHeight() * mRandom.nextFloat();
     
-    spawnBall({x, y}, Utils::pixelsToMeters(mRandom.nextFloat() * 5));
+    return spawnBall({x, y}, Utils::pixelsToMeters(mRandom.nextFloat() * 5));
 }
 
 void Physics::PulsarWorld::BeginContact(b2Contact* contact)
 {
-//    std::cout << "Contact begin" << std::endl;
+    void* userAData = contact->GetFixtureA()->GetBody()->GetUserData();
+    if(userAData != nullptr)
+    {
+        auto* ball = static_cast<Ball*>(userAData);
+        auto const midiData = ball->getMidiData();
+        
+        auto pulsarAudioEditor = dynamic_cast<PulsarAudioProcessorEditor*>(&mParent);
+        pulsarAudioEditor->sendNoteOnMessage(midiData.noteNumber, midiData.velocity);
+    }
+    
+    void* userBData = contact->GetFixtureB()->GetBody()->GetUserData();
+    if(userBData != nullptr)
+    {
+        auto* ball = static_cast<Ball*>(userBData);
+        auto const midiData = ball->getMidiData();
+        
+        auto pulsarAudioEditor = dynamic_cast<PulsarAudioProcessorEditor*>(&mParent);
+        pulsarAudioEditor->sendNoteOnMessage(midiData.noteNumber, midiData.velocity);
+    }
 }
 
 void Physics::PulsarWorld::EndContact(b2Contact* contact)
 {
-//    std::cout << "Contact end" << std::endl;
+
 }

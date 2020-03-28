@@ -51,3 +51,14 @@ b2Body* Physics::Ball::getBody()
 {
     return mBody;
 }
+
+Physics::Ball::MidiData Physics::Ball::getMidiData() const
+{
+    return mMidiData;
+}
+
+void Physics::Ball::setMidiData(int noteNumber, float velocity)
+{
+    mMidiData.noteNumber = noteNumber;
+    mMidiData.velocity = velocity;
+}

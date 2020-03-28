@@ -19,7 +19,7 @@ namespace Physics
     class PulsarWorld : public Timer, b2ContactListener
     {
     public:
-        PulsarWorld(Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity);
+        PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity);
         
         Rectangle<float> const getRect();
         float const getWidth();
@@ -39,8 +39,8 @@ namespace Physics
         /// Called when two fixtures cease to touch.
         void EndContact(b2Contact* contact) override;
         
-        void spawnBall();
-        void spawnBall(b2Vec2 pos, float radius);
+        Physics::Ball* spawnBall();
+        Physics::Ball* spawnBall(b2Vec2 pos, float radius);
         
         void timerCallback() override
         {
@@ -49,12 +49,12 @@ namespace Physics
         }
         
     private:
-        Component& mParent;
+        AudioProcessorEditor& mParent;
         
         b2World mWorld;
         Rectangle<float> mWorldRect;
         
-        std::vector<Ball> mBalls;
+        std::vector<Ball*> mBalls;
         std::unique_ptr<Polygon> mPolygon;
         
         Random mRandom;

@@ -17,11 +17,21 @@ namespace Physics
     class Ball
     {
     public:
+        struct MidiData
+        {
+            int noteNumber;
+            float velocity;
+        };
+        
         Ball(b2World& world, b2Vec2 pos, double radius = 1.0, float density = 1.0, float restitution = 0.75);
         ~Ball() = default;
         
         void startContact();
         void endContact();
+        
+        MidiData getMidiData() const;
+        
+        void setMidiData(int noteNumber, float velocity);
         
         bool isContacting();
 
@@ -31,6 +41,8 @@ namespace Physics
         bool mContacting = false;
         b2Body* mBody;
         float mRadius;
+        
+        MidiData mMidiData {1, 0.0};
     };
 }
 
