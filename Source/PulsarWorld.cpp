@@ -50,6 +50,11 @@ Rectangle<float> const Physics::PulsarWorld::getRect()
     return mWorldRect;
 }
 
+size_t Physics::PulsarWorld::getNumberOfBalls()
+{
+    return mBalls.size();
+}
+
 float const Physics::PulsarWorld::getWidth()
 {
     return mWorldRect.getWidth();

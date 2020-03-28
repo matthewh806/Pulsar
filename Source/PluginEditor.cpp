@@ -97,6 +97,8 @@ void PulsarAudioProcessorEditor::paint (Graphics& g)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
     g.setColour (Colours::white);
     
+    g.drawSingleLineText("Number of balls: " + juce::String(mWorld.getNumberOfBalls()), 20, getHeight() - 40);
+    
     Box2DRenderer box2DRenderer;
     box2DRenderer.render(g, mWorld.getWorld(), mWorld.getRect().getX(), mWorld.getRect().getY(), mWorld.getRect().getRight(), mWorld.getRect().getBottom(), getLocalBounds().toFloat());
 }

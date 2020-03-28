@@ -33,6 +33,8 @@ namespace Physics
         
         void setRect(Rectangle<float> rect);
         
+        size_t getNumberOfBalls();
+        
         void createPolygon(int nSides);
         
         void incrementPolygonRotationSpeed();
