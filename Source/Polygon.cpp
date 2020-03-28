@@ -61,6 +61,7 @@ bool Physics::Polygon::testPoint(b2Vec2 const &p)
 
 b2Vec2 Physics::Polygon::getRandomPointInside()
 {
+    //! @todo: do this properly: https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/ something like that
     auto const pos = mPolygonBody->GetPosition();
     return { Utils::RandomFloat(pos.x - mRadius, pos.x + mRadius), Utils::RandomFloat(pos.y - mRadius, pos.y + mRadius) };
 }
