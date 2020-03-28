@@ -33,6 +33,8 @@ namespace Physics
         void setRect(Rectangle<float> rect);
         
         void incrementPolygonRotationSpeed();
+        void increaseEdgeSeparation();
+        void decreaseEdgeSeparation();
         
         //b2ContactListener
         /// Called when two fixtures begin to touch.

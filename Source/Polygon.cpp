@@ -77,7 +77,7 @@ void Physics::Polygon::increaseEdgeSeparation(int amount)
         for(int i = 0; i < 4; i++)
         {
             auto const v = verts[i];
-            verts[i] = {v.x + amount * std::cos(angle), v.y + amount * std::sin(angle)};
+            verts[i] = {v.x + Utils::pixelsToMeters(amount) * std::cos(angle), v.y + Utils::pixelsToMeters(amount) * std::sin(angle)};
         }
         
         ++idx;

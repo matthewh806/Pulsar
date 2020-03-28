@@ -119,9 +119,17 @@ void PulsarAudioProcessorEditor::resized()
 
 bool PulsarAudioProcessorEditor::keyPressed(const KeyPress &key, Component *originatingComponent)
 {
-    if(key.getKeyCode() == KeyPress::spaceKey)
+    if(key == 82) // r
     {
         mWorld.incrementPolygonRotationSpeed();
+    }
+    else if (key == 73) // i
+    {
+        mWorld.increaseEdgeSeparation();
+    }
+    else if (key == 68) // d
+    {
+        mWorld.decreaseEdgeSeparation();
     }
     
     return true;

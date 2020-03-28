@@ -52,6 +52,16 @@ void Physics::PulsarWorld::incrementPolygonRotationSpeed()
     mPolygon->setAngularVelocity( std::fmod(curAngVelocity + 45 * DEGTORAD, 360 * DEGTORAD ));
 }
 
+void Physics::PulsarWorld::increaseEdgeSeparation()
+{
+    mPolygon->increaseEdgeSeparation(2);
+}
+
+void Physics::PulsarWorld::decreaseEdgeSeparation()
+{
+    mPolygon->increaseEdgeSeparation(-2);
+}
+
 Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
 {
     Ball* b = new Ball{mWorld, pos, radius};
