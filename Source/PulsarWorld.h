@@ -11,8 +11,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ball.h"
-#include "polygon.h"
+#include "Ball.h"
+#include "Polygon.h"
 
 namespace Physics
 {
