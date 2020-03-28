@@ -19,7 +19,7 @@
 /**
 */
 
-class PulsarAudioProcessorEditor  : public AudioProcessorEditor, Timer, private MidiInputCallback, private AsyncUpdater
+class PulsarAudioProcessorEditor  : public AudioProcessorEditor, public KeyListener, Timer, private MidiInputCallback, private AsyncUpdater
 {
 public:
     PulsarAudioProcessorEditor (PulsarAudioProcessor&);
@@ -34,6 +34,9 @@ public:
     {
         
     }
+    
+    // juce::keyPressed
+    bool keyPressed (const KeyPress &key, Component *originatingComponent) override;
     
     // juce::MidiInputCallback
     void handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message) override;

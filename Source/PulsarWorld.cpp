@@ -12,6 +12,9 @@
 #include "PluginEditor.h"
 #include "Utils.h"
 
+#define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
+
 Physics::PulsarWorld::PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity)
 : mParent(parent), mWorld(gravity), mWorldRect(worldRect)
 {
@@ -41,6 +44,12 @@ float const Physics::PulsarWorld::getHeight()
 void Physics::PulsarWorld::setRect(Rectangle<float> rect)
 {
     mWorldRect = rect;
+}
+
+void Physics::PulsarWorld::incrementPolygonRotationSpeed()
+{
+    auto const curAngVelocity = mPolygon->getAngularVelocity();
+    mPolygon->setAngularVelocity( std::fmod(curAngVelocity + 45 * DEGTORAD, 360 * DEGTORAD ));
 }
 
 Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)

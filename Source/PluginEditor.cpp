@@ -20,6 +20,8 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
 {
     setSize (400, 400);
     
+    addKeyListener(this);
+    
     addAndMakeVisible(mMidiInputLabel);
     addAndMakeVisible(mMidiInputList);
     addAndMakeVisible(mMidiInputChannelList);
@@ -85,6 +87,7 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
 PulsarAudioProcessorEditor::~PulsarAudioProcessorEditor()
 {
     stopTimer();
+    removeKeyListener(this);
 }
 
 //==============================================================================
@@ -112,6 +115,16 @@ void PulsarAudioProcessorEditor::resized()
     mMidiOutputLabel.setBounds(midiOutputBounds.removeFromTop(midiOutputBounds.getHeight() * 0.5));
     mMidiOutputList.setBounds(midiOutputBounds.removeFromLeft(midiOutputBounds.getWidth() * 0.67));
     mMidiOutputChannelList.setBounds(midiOutputBounds);
+}
+
+bool PulsarAudioProcessorEditor::keyPressed(const KeyPress &key, Component *originatingComponent)
+{
+    if(key.getKeyCode() == KeyPress::spaceKey)
+    {
+        mWorld.incrementPolygonRotationSpeed();
+    }
+    
+    return true;
 }
 
 void PulsarAudioProcessorEditor::handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message)
