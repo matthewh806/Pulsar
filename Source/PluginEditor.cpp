@@ -20,7 +20,12 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
 {
     setSize (400, 400);
     
+    addAndMakeVisible(mMidiInputLabel);
     addAndMakeVisible(mMidiInputList);
+    
+    addAndMakeVisible(mMidiOutputLabel);
+    addAndMakeVisible(mMidiOutputList);
+    
     mMidiInputList.setTextWhenNoChoicesAvailable("No Midi Inputs Enabled");
     auto midiInputs = MidiInput::getAvailableDevices();
     mMidiInputList.onChange = [this] {
@@ -35,7 +40,26 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
         if(mDeviceManager.isMidiInputDeviceEnabled(midiInputs[i].identifier))
         {
             setMidiInput(midiInputs[i].identifier);
-            mMidiInputList.setSelectedId(i);
+            mMidiInputList.setSelectedId(i+1);
+        }
+    }
+    
+    mMidiInputList.setTextWhenNoChoicesAvailable("No Midi Outputs Enabled");
+    auto midiOutputs = MidiOutput::getAvailableDevices();
+    mMidiOutputList.onChange = [this] {
+        auto const index = mMidiOutputList.getSelectedItemIndex();
+        auto const midiOutputs = MidiOutput::getAvailableDevices();
+        setMidiOutput(midiOutputs[index].identifier);
+    };
+    
+    for(int i = 0; i < midiOutputs.size(); ++i)
+    {
+        mMidiOutputList.addItem(midiOutputs[i].name, i+1);
+        
+        if(mDeviceManager.getDefaultMidiOutputIdentifier() == midiOutputs[i].identifier)
+        {
+            setMidiOutput(midiOutputs[i].identifier);
+            mMidiOutputList.setSelectedId(i+1);
         }
     }
     
@@ -60,8 +84,16 @@ void PulsarAudioProcessorEditor::paint (Graphics& g)
 
 void PulsarAudioProcessorEditor::resized()
 {
-    auto const bounds = getLocalBounds();
-    mMidiInputList.setBounds(bounds.getX() + 20, bounds.getY()+20, 100, 20);
+    auto bounds = getLocalBounds();
+    auto ioBounds = bounds.reduced(20, 20).removeFromTop(40);
+    auto midiInputBounds = ioBounds.removeFromLeft(ioBounds.getWidth() * 0.5);
+    auto midiOutputBounds = ioBounds;
+    
+    mMidiInputLabel.setBounds(midiInputBounds.removeFromTop(midiInputBounds.getHeight() * 0.5));
+    mMidiInputList.setBounds(midiInputBounds);
+    
+    mMidiOutputLabel.setBounds(midiOutputBounds.removeFromTop(midiOutputBounds.getHeight() * 0.5));
+    mMidiOutputList.setBounds(midiOutputBounds);
 }
 
 void PulsarAudioProcessorEditor::handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message)
@@ -105,4 +137,10 @@ void PulsarAudioProcessorEditor::setMidiInput(const String& identifier)
     }
     
     mDeviceManager.addMidiInputDeviceCallback(identifier, this);
+}
+
+void PulsarAudioProcessorEditor::setMidiOutput(const String& identifier)
+{
+    auto list = MidiOutput::getAvailableDevices();
+    mMidiOutput = MidiOutput::openDevice(identifier);
 }

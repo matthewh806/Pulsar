@@ -43,6 +43,7 @@ public:
 
 private:
     void setMidiInput(const String& identifier);
+    void setMidiOutput(const String& identifier);
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -55,9 +56,10 @@ private:
     
     AudioDeviceManager mDeviceManager;
     Label mMidiInputLabel    { "Midi Input Label",  "MIDI Input:" };
-    ComboBox mMidiInputList;
-    int mLastInputIndex = 0;
+    Label mMidiOutputLabel {"Midi Output Labe;", "Midi Output: "};
+    ComboBox mMidiInputList, mMidiOutputList;
     
-
+    std::unique_ptr<MidiOutput> mMidiOutput;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulsarAudioProcessorEditor)
 };
