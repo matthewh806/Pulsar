@@ -14,6 +14,7 @@
 Physics::Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radius, float startAngle, b2Vec2 center)
 {
     mNumSides = nSides;
+    mRadius = radius;
     
     b2PolygonShape polygonShape;
     
@@ -42,16 +43,26 @@ Physics::Polygon::Polygon(b2World& world, b2Vec2 pos, int32 nSides, double radiu
         b2Vec2 const boxCenter((p.x + p_next.x) * 0.5f, (p.y + p_next.y) * 0.5f);
         auto const boxAngle = std::atan2(p_next.y - p.y, p_next.x - p.x);
         
+        vertices[i].Set(p.x, p.y);
         polygonShape.SetAsBox(sideLength * 0.5f, Utils::pixelsToMeters(1.0f), boxCenter, boxAngle);
         mPolygonBody->CreateFixture(&polygonFixtureDef);
     }
-    
-    mPolygonBody->CreateFixture(&polygonFixtureDef);
 }
 
 b2Body* Physics::Polygon::getBody()
 {
     return mPolygonBody;
+}
+
+bool Physics::Polygon::testPoint(b2Vec2 const &p)
+{
+    return mPolygonShape.TestPoint(mPolygonBody->GetTransform(), p);
+}
+
+b2Vec2 Physics::Polygon::getRandomPointInside()
+{
+    auto const pos = mPolygonBody->GetPosition();
+    return { Utils::RandomFloat(pos.x - mRadius, pos.x + mRadius), Utils::RandomFloat(pos.y - mRadius, pos.y + mRadius) };
 }
 
 void Physics::Polygon::increaseEdgeSeparation(int amount)

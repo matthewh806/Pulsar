@@ -24,6 +24,8 @@ namespace Physics
         float getRadius();
         bool testPoint(b2Vec2 const &p);
         
+        b2Vec2 getRandomPointInside();
+        
         void incrementRotation();
         void increaseEdgeSeparation(int amount);
         

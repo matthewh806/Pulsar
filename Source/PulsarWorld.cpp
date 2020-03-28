@@ -53,10 +53,7 @@ Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
 
 Physics::Ball* Physics::PulsarWorld::spawnBall()
 {
-    auto const x = mWorldRect.getWidth() * mRandom.nextFloat();
-    auto const y = mWorldRect.getHeight() * mRandom.nextFloat();
-    
-    return spawnBall({x, y}, Utils::pixelsToMeters(mRandom.nextFloat() * 5));
+    return spawnBall(mPolygon->getRandomPointInside(), Utils::pixelsToMeters(mRandom.nextFloat() * 5));
 }
 
 void Physics::PulsarWorld::BeginContact(b2Contact* contact)

@@ -133,8 +133,6 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
     
     for(auto &m : messages)
     {
-        std::cout << "Message: " + m.getDescription() << "\n";
-        
         if(m.isNoteOn() && m.getChannel() == mMidiInputChannel)
         {
             auto* b = mWorld.spawnBall();

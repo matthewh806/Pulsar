@@ -14,6 +14,8 @@
 
 namespace Physics
 {
+    #define    RAND_LIMIT 32767
+
     class Utils
     {
     public:
@@ -36,6 +38,15 @@ namespace Physics
         {
             return b2Vec2(xMeters * pixelsPerMeter, yMeters * pixelsPerMeter);
         }
+        
+        static float RandomFloat(float lo, float hi)
+        {
+            float r = (float)(rand() & (RAND_LIMIT));
+            r /= RAND_LIMIT;
+            r = (hi - lo) * r + lo;
+            return r;
+        }
+
         
         constexpr static const float pixelsPerMeter = 100;
     };
