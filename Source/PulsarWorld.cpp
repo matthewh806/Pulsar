@@ -114,30 +114,78 @@ Physics::Ball* Physics::PulsarWorld::spawnBall()
     return spawnBall(mPolygon->getRandomPointInside(), Utils::pixelsToMeters(mRandom.nextFloat() * 5));
 }
 
+void Physics::PulsarWorld::removeBalls()
+{
+    for(auto it = mBallsToRemove.begin(); it != mBallsToRemove.end(); ++it)
+    {
+        removeBall(*it);
+    }
+    
+    mBallsToRemove.clear();
+}
+
 void Physics::PulsarWorld::BeginContact(b2Contact* contact)
 {
     void* userAData = contact->GetFixtureA()->GetBody()->GetUserData();
-    if(userAData != nullptr)
+    void* userBData = contact->GetFixtureB()->GetBody()->GetUserData();
+    
+    if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor())
     {
-        auto* ball = static_cast<Ball*>(userAData);
-        auto const midiData = ball->getMidiData();
+        if(userAData)
+        {
+            auto* ball = static_cast<Ball*>(userAData);
+            auto const midiData = ball->getMidiData();
         
-        auto pulsarAudioEditor = dynamic_cast<PulsarAudioProcessorEditor*>(&mParent);
-        pulsarAudioEditor->sendNoteOnMessage(midiData.noteNumber, midiData.velocity);
+            auto pulsarAudioEditor = dynamic_cast<PulsarAudioProcessorEditor*>(&mParent);
+            pulsarAudioEditor->sendNoteOnMessage(midiData.noteNumber, midiData.velocity);
+        }
+        
+        if(userBData)
+        {
+            auto* ball = static_cast<Ball*>(userBData);
+            auto const midiData = ball->getMidiData();
+        
+            auto pulsarAudioEditor = dynamic_cast<PulsarAudioProcessorEditor*>(&mParent);
+            pulsarAudioEditor->sendNoteOnMessage(midiData.noteNumber, midiData.velocity);
+        }
+        
+        return;
     }
     
-    void* userBData = contact->GetFixtureB()->GetBody()->GetUserData();
-    if(userBData != nullptr)
+    if(contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor())
     {
         auto* ball = static_cast<Ball*>(userBData);
-        auto const midiData = ball->getMidiData();
+        mBallsToRemove.insert(ball);
         
-        auto pulsarAudioEditor = dynamic_cast<PulsarAudioProcessorEditor*>(&mParent);
-        pulsarAudioEditor->sendNoteOnMessage(midiData.noteNumber, midiData.velocity);
+        return;
+    }
+    
+    if(contact->GetFixtureB()->IsSensor() && !contact->GetFixtureA()->IsSensor())
+    {
+        auto* ball = static_cast<Ball*>(userAData);
+        mBallsToRemove.insert(ball);
+        
+        return;
     }
 }
 
 void Physics::PulsarWorld::EndContact(b2Contact* contact)
 {
 
+}
+
+void Physics::PulsarWorld::removeBall(Ball* ball)
+{
+    for(auto it = mBalls.begin(); it != mBalls.end();)
+    {
+        if(*it == ball)
+        {
+            delete ball;
+            mBalls.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }

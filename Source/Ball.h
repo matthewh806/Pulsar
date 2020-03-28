@@ -24,7 +24,7 @@ namespace Physics
         };
         
         Ball(b2World& world, b2Vec2 pos, double radius = 1.0, float density = 1.0, float restitution = 0.75);
-        ~Ball() = default;
+        ~Ball();
         
         void startContact();
         void endContact();
