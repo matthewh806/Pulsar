@@ -131,6 +131,34 @@ bool PulsarAudioProcessorEditor::keyPressed(const KeyPress &key, Component *orig
     {
         mWorld.decreaseEdgeSeparation();
     }
+    else if(key == KeyPress::numberPad3 || key == 51)
+    {
+        mWorld.createPolygon(3);
+    }
+    else if(key == KeyPress::numberPad4 || key == 52)
+    {
+        mWorld.createPolygon(4);
+    }
+    else if(key == KeyPress::numberPad5 || key == 53)
+    {
+        mWorld.createPolygon(5);
+    }
+    else if(key == KeyPress::numberPad6 || key == 54)
+    {
+        mWorld.createPolygon(6);
+    }
+    else if(key == KeyPress::numberPad7 || key == 55)
+    {
+        mWorld.createPolygon(7);
+    }
+    else if(key == KeyPress::numberPad8 || key == 56)
+    {
+        mWorld.createPolygon(8);
+    }
+    else if(key == KeyPress::numberPad9 || key == 57)
+    {
+        mWorld.createPolygon(9);
+    }
     
     return true;
 }

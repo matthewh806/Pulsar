@@ -19,9 +19,7 @@ Physics::PulsarWorld::PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<
 : mParent(parent), mWorld(gravity), mWorldRect(worldRect)
 {
     startTimer(60);
-    
-    b2Vec2 polygonPos = {mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f};
-    mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, 6, static_cast<float>(Utils::pixelsToMeters(120.0)));
+    createPolygon(6);
     
     mWorld.SetContactListener(this);
 }
@@ -44,6 +42,26 @@ float const Physics::PulsarWorld::getHeight()
 void Physics::PulsarWorld::setRect(Rectangle<float> rect)
 {
     mWorldRect = rect;
+}
+
+void Physics::PulsarWorld::createPolygon(int nSides)
+{
+    if(mPolygon != nullptr)
+    {
+        for(auto* b : mBalls)
+        {
+            mWorld.DestroyBody(b->getBody());
+        }
+        mBalls.clear();
+        
+        mWorld.DestroyBody(mPolygon->getBody());
+        mPolygon.release();
+    }
+    
+    mBalls.clear();
+    
+    b2Vec2 polygonPos = {mWorldRect.getWidth() * 0.5f, mWorldRect.getHeight() * 0.5f};
+    mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, nSides, static_cast<float>(Utils::pixelsToMeters(120.0)));
 }
 
 void Physics::PulsarWorld::incrementPolygonRotationSpeed()

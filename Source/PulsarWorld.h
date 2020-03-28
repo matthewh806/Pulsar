@@ -32,6 +32,8 @@ namespace Physics
         
         void setRect(Rectangle<float> rect);
         
+        void createPolygon(int nSides);
+        
         void incrementPolygonRotationSpeed();
         void increaseEdgeSeparation();
         void decreaseEdgeSeparation();
