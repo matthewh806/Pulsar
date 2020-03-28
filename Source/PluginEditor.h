@@ -57,11 +57,14 @@ private:
     Array<MidiMessage> mIncomingMessages;
     
     AudioDeviceManager mDeviceManager;
-    Label mMidiInputLabel    { "Midi Input Label",  "MIDI Input:" };
-    Label mMidiOutputLabel {"Midi Output Labe;", "Midi Output: "};
+    Label mMidiInputLabel    { "Midi Input Label",  "MIDI Input / Channel:" };
+    Label mMidiOutputLabel { "Midi Output Label", "Midi Output / Channel:" };
     ComboBox mMidiInputList, mMidiOutputList;
+    ComboBox mMidiInputChannelList, mMidiOutputChannelList;
     
     std::unique_ptr<MidiOutput> mMidiOutput;
+    int mMidiInputChannel;
+    int mMidiOutputChannel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulsarAudioProcessorEditor)
 };

@@ -22,9 +22,11 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
     
     addAndMakeVisible(mMidiInputLabel);
     addAndMakeVisible(mMidiInputList);
+    addAndMakeVisible(mMidiInputChannelList);
     
     addAndMakeVisible(mMidiOutputLabel);
     addAndMakeVisible(mMidiOutputList);
+    addAndMakeVisible(mMidiOutputChannelList);
     
     mMidiInputList.setTextWhenNoChoicesAvailable("No Midi Inputs Enabled");
     auto midiInputs = MidiInput::getAvailableDevices();
@@ -43,6 +45,20 @@ PulsarAudioProcessorEditor::PulsarAudioProcessorEditor (PulsarAudioProcessor& p)
             mMidiInputList.setSelectedId(i+1);
         }
     }
+    
+    for(int i = 1; i <= 16; ++i)
+    {
+        mMidiInputChannelList.addItem(juce::String(i), i);
+        mMidiOutputChannelList.addItem(juce::String(i), i);
+    }
+    
+    mMidiInputChannelList.onChange = [this] {
+        mMidiInputChannel = mMidiInputChannelList.getSelectedId();
+    };
+    
+    mMidiOutputChannelList.onChange = [this] {
+        mMidiOutputChannel = mMidiOutputChannelList.getSelectedId();
+    };
     
     mMidiInputList.setTextWhenNoChoicesAvailable("No Midi Outputs Enabled");
     auto midiOutputs = MidiOutput::getAvailableDevices();
@@ -90,10 +106,12 @@ void PulsarAudioProcessorEditor::resized()
     auto midiOutputBounds = ioBounds;
     
     mMidiInputLabel.setBounds(midiInputBounds.removeFromTop(midiInputBounds.getHeight() * 0.5));
-    mMidiInputList.setBounds(midiInputBounds);
+    mMidiInputList.setBounds(midiInputBounds.removeFromLeft(midiInputBounds.getWidth() * 0.67));
+    mMidiInputChannelList.setBounds(midiInputBounds);
     
     mMidiOutputLabel.setBounds(midiOutputBounds.removeFromTop(midiOutputBounds.getHeight() * 0.5));
-    mMidiOutputList.setBounds(midiOutputBounds);
+    mMidiOutputList.setBounds(midiOutputBounds.removeFromLeft(midiOutputBounds.getWidth() * 0.67));
+    mMidiOutputChannelList.setBounds(midiOutputBounds);
 }
 
 void PulsarAudioProcessorEditor::handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message)
@@ -117,7 +135,7 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
     {
         std::cout << "Message: " + m.getDescription() << "\n";
         
-        if(m.isNoteOn())
+        if(m.isNoteOn() && m.getChannel() == mMidiInputChannel)
         {
             auto* b = mWorld.spawnBall();
             b->setMidiData(m.getNoteNumber(), m.getVelocity());
@@ -127,10 +145,10 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
 
 void PulsarAudioProcessorEditor::sendNoteOnMessage(int noteNumber, float velocity)
 {
-    auto message = MidiMessage::noteOn(1, noteNumber, static_cast<uint8>(velocity));
+    auto message = MidiMessage::noteOn(mMidiOutputChannel, noteNumber, static_cast<uint8>(velocity));
     message.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
     
-    std::cout << "SendNoteOn: (note, velocity): " << noteNumber << ", " << velocity << "\n";
+    std::cout << "SendNoteOn: (ch, note, velocity): " << mMidiInputChannel << ", " << noteNumber << ", " << velocity << "\n";
     
     if(mMidiOutput)
     {
