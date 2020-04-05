@@ -49,6 +49,15 @@ namespace Physics
         void EndContact(b2Contact* contact) override;
         
         Physics::Ball* spawnBall();
+        
+        //! @brief: Spawn a ball at pos and with random radius
+        //!
+        //! Note: Coordinates should be scaled to physics coordinates
+        Physics::Ball* spawnBall(b2Vec2 pos);
+        
+        //! @brief: Spawn a ball at pos and with radius
+        //!
+        //! Note: Coordinates should be scaled to physics coordinates
         Physics::Ball* spawnBall(b2Vec2 pos, float radius);
         
         //! @brief: remove all balls scheduled to be removed from the scene.

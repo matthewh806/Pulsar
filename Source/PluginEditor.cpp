@@ -165,6 +165,12 @@ bool PulsarAudioProcessorEditor::keyPressed(const KeyPress &key, Component *orig
     return true;
 }
 
+void PulsarAudioProcessorEditor::mouseUp (const MouseEvent& event)
+{
+    auto const pos = event.position;
+    mWorld.spawnBall({Physics::Utils::pixelsToMeters(pos.x), Physics::Utils::pixelsToMeters(pos.y)});
+}
+
 void PulsarAudioProcessorEditor::handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message)
 {
     const ScopedLock s1 (mMidiMonitorLock);

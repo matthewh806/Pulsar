@@ -38,6 +38,8 @@ public:
     // juce::keyPressed
     bool keyPressed (const KeyPress &key, Component *originatingComponent) override;
     
+    void mouseUp (const MouseEvent& event) override;
+    
     // juce::MidiInputCallback
     void handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message) override;
     

@@ -106,6 +106,11 @@ void Physics::PulsarWorld::decreaseEdgeSeparation()
     mPolygon->increaseEdgeSeparation(-2);
 }
 
+Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos)
+{
+    return spawnBall(pos, Utils::pixelsToMeters(mRandom.nextFloat() * 5));
+}
+
 Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
 {
     Ball* b = new Ball{mWorld, pos, radius};
