@@ -40,7 +40,7 @@ Physics::PulsarWorld::PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<
     boundaryPolygonShape.SetAsBox(Utils::pixelsToMeters(1), getRect().getHeight() * 0.5, {static_cast<float32>((getRect().getRight())), static_cast<float32>(getRect().getHeight() * 0.5)}, 0); // right
     mWorldBoundary->CreateFixture(&borderFixtureDef);
     
-    createPolygon(6);
+    createPolygon(3);
     
     mWorld.SetContactListener(this);
 }
@@ -104,6 +104,11 @@ void Physics::PulsarWorld::increaseEdgeSeparation()
 void Physics::PulsarWorld::decreaseEdgeSeparation()
 {
     mPolygon->increaseEdgeSeparation(-2);
+}
+
+bool Physics::PulsarWorld::testPointInPolygon(b2Vec2 const &p)
+{
+    return mPolygon->testPoint(p);
 }
 
 Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos)

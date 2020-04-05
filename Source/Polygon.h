@@ -37,5 +37,8 @@ namespace Physics
         float mRadius;
         int32 mNumSides;
         b2PolygonShape mPolygonShape;
+        
+        b2PolygonShape mPolygonVertexShape;
+        b2Vec2 mVertices[9];
     };
 }

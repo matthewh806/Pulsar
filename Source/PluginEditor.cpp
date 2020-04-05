@@ -167,8 +167,11 @@ bool PulsarAudioProcessorEditor::keyPressed(const KeyPress &key, Component *orig
 
 void PulsarAudioProcessorEditor::mouseUp (const MouseEvent& event)
 {
-    auto const pos = event.position;
-    mWorld.spawnBall({Physics::Utils::pixelsToMeters(pos.x), Physics::Utils::pixelsToMeters(pos.y)});
+    b2Vec2 const worldPos {Physics::Utils::pixelsToMeters(event.position.x), Physics::Utils::pixelsToMeters(event.position.y)};
+    if(mWorld.testPointInPolygon(worldPos))
+    {
+        mWorld.spawnBall(worldPos);
+    }
 }
 
 void PulsarAudioProcessorEditor::handleIncomingMidiMessage (MidiInput *source, const MidiMessage &message)

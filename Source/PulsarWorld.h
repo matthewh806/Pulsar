@@ -41,6 +41,8 @@ namespace Physics
         void increaseEdgeSeparation();
         void decreaseEdgeSeparation();
         
+        bool testPointInPolygon(b2Vec2 const &p);
+        
         //b2ContactListener
         /// Called when two fixtures begin to touch.
         void BeginContact(b2Contact* contact) override;
