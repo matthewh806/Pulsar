@@ -113,20 +113,21 @@ bool Physics::PulsarWorld::testPointInPolygon(b2Vec2 const &p)
 
 Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos)
 {
-    return spawnBall(pos, Utils::pixelsToMeters(mRandom.nextFloat() * 5));
+    return spawnBall(pos, Utils::pixelsToMeters(mRandom.nextFloat() * 5), 0, 72);
 }
 
-Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius)
+Physics::Ball* Physics::PulsarWorld::spawnBall(b2Vec2 pos, float radius, int noteNumber, float velocity)
 {
     Ball* b = new Ball{mWorld, pos, radius};
+    b->setMidiData(noteNumber, velocity);
     mBalls.push_back(b);
     
     return b;
 }
 
-Physics::Ball* Physics::PulsarWorld::spawnBall()
+Physics::Ball* Physics::PulsarWorld::spawnBall(int noteNumber, float velocity)
 {
-    return spawnBall(mPolygon->getRandomPointInside(), Utils::pixelsToMeters(mRandom.nextFloat() * 5));
+    return spawnBall(mPolygon->getRandomPointInside(), Utils::pixelsToMeters(mRandom.nextFloat() * 5), noteNumber, velocity);
 }
 
 void Physics::PulsarWorld::removeBalls()

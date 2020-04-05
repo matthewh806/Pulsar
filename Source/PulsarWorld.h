@@ -50,7 +50,7 @@ namespace Physics
         /// Called when two fixtures cease to touch.
         void EndContact(b2Contact* contact) override;
         
-        Physics::Ball* spawnBall();
+        Physics::Ball* spawnBall(int noteNumber, float velocity);
         
         //! @brief: Spawn a ball at pos and with random radius
         //!
@@ -60,7 +60,7 @@ namespace Physics
         //! @brief: Spawn a ball at pos and with radius
         //!
         //! Note: Coordinates should be scaled to physics coordinates
-        Physics::Ball* spawnBall(b2Vec2 pos, float radius);
+        Physics::Ball* spawnBall(b2Vec2 pos, float radius, int noteNumber, float velocity);
         
         //! @brief: remove all balls scheduled to be removed from the scene.
         //! should be called outside step method!

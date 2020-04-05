@@ -195,8 +195,7 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
     {
         if(m.isNoteOn() && m.getChannel() == mMidiInputChannel)
         {
-            auto* b = mWorld.spawnBall();
-            b->setMidiData(m.getNoteNumber(), m.getVelocity());
+            auto* b = mWorld.spawnBall(m.getNoteNumber(), m.getVelocity());
         }
     }
 }
