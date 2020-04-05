@@ -193,9 +193,22 @@ void PulsarAudioProcessorEditor::handleAsyncUpdate()
     
     for(auto &m : messages)
     {
-        if(m.isNoteOn() && m.getChannel() == mMidiInputChannel)
+        if(m.getChannel() != mMidiInputChannel)
+        {
+            continue;
+        }
+        
+        if(m.isNoteOn())
         {
             mWorld.spawnBall(m.getNoteNumber(), m.getVelocity());
+        }
+        else if(m.isController())
+        {
+            auto const pitchVal = m.getControllerValue();
+            
+            // map 0 - 127 to 0 - 360
+            auto anglularVelocity = 360.0 / static_cast<double>(127) * static_cast<double>(pitchVal);
+            mWorld.setPolygonRotationSpeed(anglularVelocity);
         }
     }
 }

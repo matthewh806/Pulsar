@@ -37,7 +37,11 @@ namespace Physics
         
         void createPolygon(int nSides);
         
+        //! @brief: Set the angular velocity of the polyon.
+        //! value will wrap around range  [0, 360]
+        void setPolygonRotationSpeed(double angularVelocity);
         void incrementPolygonRotationSpeed();
+        
         void increaseEdgeSeparation();
         void decreaseEdgeSeparation();
         

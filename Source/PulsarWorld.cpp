@@ -90,6 +90,11 @@ void Physics::PulsarWorld::createPolygon(int nSides)
     mPolygon = std::make_unique<Polygon>(mWorld, polygonPos, nSides, static_cast<float>(Utils::pixelsToMeters(120.0)));
 }
 
+void Physics::PulsarWorld::setPolygonRotationSpeed(double speed)
+{
+    mPolygon->setAngularVelocity( std::fmod(speed * DEGTORAD, 360 * DEGTORAD ));
+}
+
 void Physics::PulsarWorld::incrementPolygonRotationSpeed()
 {
     auto const curAngVelocity = mPolygon->getAngularVelocity();
