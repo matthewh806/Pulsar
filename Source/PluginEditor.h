@@ -19,6 +19,8 @@
 /**
 */
 
+//! @todo: Add a free play mode that adds balls in a certain key at random. With random changes to rotation, gravity etc
+//! @todo: Add ability to connect rotation, gravity etc with midi for things like lfos
 class PulsarAudioProcessorEditor  : public AudioProcessorEditor, public KeyListener, Timer, private MidiInputCallback, private AsyncUpdater
 {
 public:
