@@ -4,13 +4,14 @@ A recreation of the Teenage Engineering Tombola OP-1 sequencer
 ### What Am I looking at?
 It's kind of like a random sequencer (although, barring floating point errors, I guess all of the mechanics operate within a deterministic system - so its not really random. Given the exact same initial / temporal conditions you could recreate anything here).
 
-There is this rotating (where it came from or why I'm not sure), collapsing polygon which holds little bouncing balls. Clicking in the shape or pressing a key on an input Midi device spawns a ball (either where you clicked or randomly with a note on midi input event) and when these balls collide with eachother or the sides of the polygonal prison they scream out the original midi note that birthed them or something random if they were born out of the quantum-fluctuation that occurs after a mouseclick. If there's someone listening on a midi output device it might just convert and echo and remit the wail. 
+There is this rotating (where it came from or why I'm not sure), collapsing polygon which holds little bouncing balls. Clicking in the shape or pressing a key on an input Midi device spawns one of these balls ball (either where you clicked or randomly with a note on midi input event) and when these balls collide with eachother or the sides of the polygonal prison they scream out the original midi note that birthed them (or something random if they were born out of the quantum-fluctuation that occurs after a mouseclick). If there's someone listening on a midi output device it might just convert and echo that sound. 
 
 Using the box2d engine for physics this cosmic ballet plays out endlessly and if you feel particularly benevolent you can very slightly open up the polygon and let some of those balls escape and live the life they've always wanted & deserved.
 
 ### Compiling / Building / Running
 
 At the moment the only way to get this running is to compile it yourself (and only tested on macOS).
+
 [JUCE](https://juce.com/) is the audio framework used. I've included it as a submodule, so getting everything you need should be as simple as:
 
 ```
