@@ -56,7 +56,6 @@ MainComponent::MainComponent ()
 MainComponent::~MainComponent()
 {
     removeKeyListener(this);
-    
     mDeviceManager.removeChangeListener(this);
 }
 
@@ -87,6 +86,21 @@ void MainComponent::resized()
     
     mGravitySlider.setBounds(ctrlBounds.removeFromLeft(100));
     mRotationSlider.setBounds(ctrlBounds.removeFromLeft(100));
+}
+
+void MainComponent::showAudioSettings()
+{
+    DialogWindow::LaunchOptions o;
+    
+    o.dialogTitle = juce::translate("Audio/MIDI settings");
+    o.dialogBackgroundColour = o.content->getLookAndFeel().findColour (ResizableWindow::backgroundColourId);
+    o.escapeKeyTriggersCloseButton = true;
+    o.useNativeTitleBar = true;
+    o.resizable = false;
+    o.content.setOwned(new AudioDeviceSelectorComponent(mDeviceManager, 0, 0, 0, 0, true, true, true, false));
+    o.content->setSize (300, 300);
+    
+    o.launchAsync();
 }
 
 bool MainComponent::keyPressed(const KeyPress &key, Component *originatingComponent)

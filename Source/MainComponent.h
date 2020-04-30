@@ -42,8 +42,9 @@ public:
        
     // juce::AsyncUpdater
     void handleAsyncUpdate() override;
-       
     void sendNoteOnMessage(int noteNumber, float velocity);
+    
+    void showAudioSettings();
 
 private:
     //==============================================================================
@@ -59,12 +60,14 @@ private:
     CriticalSection mMidiMonitorLock;
     Array<MidiMessage> mIncomingMessages;
    
-    AudioDeviceManager mDeviceManager;
     Label mMidiChannelLabel {"MIDI CH (in/out)"};
     ComboBox mMidiInputChannelList, mMidiOutputChannelList;
    
     juce::Slider mRotationSlider;
     juce::Slider mGravitySlider;
+    
+    AudioDeviceManager mDeviceManager;
+    std::unique_ptr<AudioDeviceSelectorComponent> mAudioSettingsComp;
    
     std::unique_ptr<MidiOutput> mMidiOutput;
     int mMidiInputChannel;

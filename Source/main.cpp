@@ -25,80 +25,156 @@ public:
     //==============================================================================
     void initialise (const String& commandLine) override
     {
-        // This method is where you should put your application's initialisation code..
+        class MainWindow    : public DocumentWindow
+        {
+        public:
+            MainWindow (MainComponent& content)
+            : DocumentWindow (ProjectInfo::projectName, Desktop::getInstance().getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId), DocumentWindow::allButtons)
+            {
+                setUsingNativeTitleBar (true);
+                setContentOwned (new MainComponent(), true);
+                
+                addKeyListener(getCommandManager().getKeyMappings());
 
-        mainWindow.reset (new MainWindow (getApplicationName()));
+               #if JUCE_IOS || JUCE_ANDROID
+                setFullScreen (true);
+               #else
+                setResizable (true, true);
+                centreWithSize (getWidth(), getHeight());
+               #endif
+
+                setVisible (true);
+            }
+
+            void closeButtonPressed() override
+            {
+                JUCEApplication::getInstance()->systemRequestedQuit();
+            }
+            
+        private:
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
+        };
+        
+        mCommandManager.registerAllCommandsForTarget(this);
+        mMainWindow = std::make_unique<MainWindow>(mContent);
+        
+        #if JUCE_MAC
+                juce::PopupMenu extraAppleMenuItems;
+                extraAppleMenuItems.addCommandItem(&mCommandManager, CommandIds::AudioMidiSettings);
+                
+                juce::MenuBarModel::setMacMainMenu(&mMenuModel, &extraAppleMenuItems);
+        #endif
     }
 
     void shutdown() override
     {
-        // Add your application's shutdown code here..
-
-        mainWindow = nullptr; // (deletes our window)
+        mMainWindow = nullptr; // (deletes our window)
     }
 
     //==============================================================================
     void systemRequestedQuit() override
     {
-        // This is called when the app is being asked to quit: you can ignore this
-        // request and let the app carry on running, or call quit() to allow the app to close.
         quit();
     }
 
     void anotherInstanceStarted (const String& commandLine) override
     {
-        // When another instance of the app is launched while this one is running,
-        // this method is invoked, and the commandLine parameter tells you what
-        // the other instance's command-line arguments were.
     }
-
-    //==============================================================================
-    /*
-        This class implements the desktop window that contains an instance of
-        our MainComponent class.
-    */
-    class MainWindow    : public DocumentWindow
+    
+    enum CommandIds
+    {
+        AudioMidiSettings = 0x0010
+    };
+    
+    juce::ApplicationCommandTarget* getNextCommandTarget() override
+    {
+        return nullptr;
+    }
+    
+    void getAllCommands(juce::Array<juce::CommandID>& commands) override
+    {
+        const juce::CommandID ids[] =
+        {
+            CommandIds::AudioMidiSettings,
+        };
+        
+        commands.addArray(ids, numElementsInArray(ids));
+    }
+    
+    void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo& result) override
+    {
+        switch(commandID)
+        {
+            case CommandIds::AudioMidiSettings:
+            {
+                result.setInfo(juce::translate("Audio/MIDI settings"), juce::translate("Open the Audio/MIDI settings panel"), "Application", 0);
+                result.defaultKeypresses.add(juce::KeyPress(',', juce::ModifierKeys::commandModifier, 0));
+                break;
+            }
+        }
+    }
+    
+    bool perform(juce::ApplicationCommandTarget::InvocationInfo const& info) override
+    {
+        switch(info.commandID)
+        {
+            case CommandIds::AudioMidiSettings:
+            {
+                mContent.showAudioSettings();
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    class MainMenuModel
+    : public juce::MenuBarModel
     {
     public:
-        MainWindow (String name)  : DocumentWindow (name,
-                                                    Desktop::getInstance().getDefaultLookAndFeel()
-                                                                          .findColour (ResizableWindow::backgroundColourId),
-                                                    DocumentWindow::allButtons)
+        MainMenuModel() = default;
+        ~MainMenuModel() override = default;
+        
+        juce::StringArray getMenuBarNames() override
         {
-            setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent(), true);
-
-           #if JUCE_IOS || JUCE_ANDROID
-            setFullScreen (true);
-           #else
-            setResizable (true, true);
-            centreWithSize (getWidth(), getHeight());
-           #endif
-
-            setVisible (true);
+            return {};
         }
-
-        void closeButtonPressed() override
+        
+        juce::PopupMenu getMenuForIndex(int index, juce::String const& name) override
         {
-            // This is called when the user tries to close this window. Here, we'll just
-            // ask the app to quit when this happens, but you can change this to do
-            // whatever you need.
-            JUCEApplication::getInstance()->systemRequestedQuit();
+            juce::ignoreUnused(name);
+            
+            juce::PopupMenu menu;
+            if(name == "File")
+            {
+                menu.addCommandItem(&getCommandManager(), CommandIds::AudioMidiSettings);
+            }
+            
+            return menu;
         }
-
-        /* Note: Be careful if you override any DocumentWindow methods - the base
-           class uses a lot of them, so by overriding you might break its functionality.
-           It's best to do all your work in your content component instead, but if
-           you really have to override any DocumentWindow methods, make sure your
-           subclass also calls the superclass's method.
-        */
-
-    private:
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
+        
+        void menuItemSelected(int itemId, int index) override
+        {
+            juce::ignoreUnused(itemId, index);
+        }
     };
+    
+    static PulsarApplication& getApp()
+    {
+        return *dynamic_cast<PulsarApplication*>(JUCEApplication::getInstance());
+    }
+
+    static juce::ApplicationCommandManager& getCommandManager()
+    {
+        return getApp().mCommandManager;
+    }
 
 private:
-    std::unique_ptr<MainWindow> mainWindow;
+    std::unique_ptr<juce::DocumentWindow> mMainWindow;
+    MainComponent mContent;
+    
+    MainMenuModel mMenuModel;
+    juce::ApplicationCommandManager mCommandManager;
 };
 
 //==============================================================================
