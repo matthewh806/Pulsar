@@ -20,7 +20,7 @@ namespace Physics
     class PulsarWorld : public Timer, b2ContactListener
     {
     public:
-        PulsarWorld(AudioProcessorEditor& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity);
+        PulsarWorld(juce::Component& parent, juce::Rectangle<float> worldRect, const b2Vec2& gravity);
         
         Rectangle<float> const getRect();
         float const getWidth();
@@ -41,6 +41,8 @@ namespace Physics
         //! value will wrap around range  [0, 360]
         void setPolygonRotationSpeed(double angularVelocity);
         void incrementPolygonRotationSpeed();
+        
+        void setGravity(b2Vec2 grav);
         
         void increaseEdgeSeparation();
         void decreaseEdgeSeparation();
@@ -82,7 +84,7 @@ namespace Physics
     private:
         void removeBall(Ball* ball);
         
-        AudioProcessorEditor& mParent;
+        juce::Component& mParent;
         
         b2World mWorld;
         Rectangle<float> mWorldRect;

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="zKWxzZ" name="Pulsar" projectType="audioplug" jucerVersion="5.4.7"
-              pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn">
+<JUCERPROJECT id="zKWxzZ" name="Pulsar" projectType="guiapp" jucerVersion="5.4.7"
+              pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
+              companyName="The Office of Unspecified Services">
   <MAINGROUP id="jDf2Fa" name="Pulsar">
     <GROUP id="{6283231E-3872-EBD3-C15F-1EDA5CFF6714}" name="Source">
+      <GROUP id="{56159E11-0121-E2BD-C1B2-4C5204D0346C}" name="App">
+        <FILE id="aNuL05" name="MainComponent.cpp" compile="1" resource="0"
+              file="Source/MainComponent.cpp"/>
+        <FILE id="GumFKH" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      </GROUP>
+      <FILE id="W1szV0" name="main.cpp" compile="1" resource="0" file="Source/main.cpp"/>
       <GROUP id="{839FC1AB-913D-D012-1268-9BB0216BED72}" name="Physics">
         <FILE id="NAcqra" name="Utils.cpp" compile="1" resource="0" file="Source/Utils.cpp"/>
         <FILE id="YpzVqA" name="Utils.h" compile="0" resource="0" file="Source/Utils.h"/>
@@ -14,13 +21,6 @@
         <FILE id="WPi3eo" name="Polygon.h" compile="0" resource="0" file="Source/Polygon.h"/>
         <FILE id="NWG7W9" name="Ball.cpp" compile="1" resource="0" file="Source/Ball.cpp"/>
       </GROUP>
-      <FILE id="jq4dGv" name="PluginProcessor.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor.cpp"/>
-      <FILE id="euDisN" name="PluginProcessor.h" compile="0" resource="0"
-            file="Source/PluginProcessor.h"/>
-      <FILE id="Yz7hAC" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="YjrIug" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
@@ -33,9 +33,7 @@
         <MODULEPATH id="juce_audio_basics" path="vendor/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="vendor/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="vendor/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="vendor/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="vendor/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="vendor/JUCE/modules"/>
         <MODULEPATH id="juce_core" path="vendor/JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="vendor/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="vendor/JUCE/modules"/>
@@ -52,10 +50,7 @@
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
-            useGlobalPath="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_box2d" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

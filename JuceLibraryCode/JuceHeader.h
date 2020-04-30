@@ -17,9 +17,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_formats/juce_audio_formats.h>
-#include <juce_audio_plugin_client/juce_audio_plugin_client.h>
 #include <juce_audio_processors/juce_audio_processors.h>
-#include <juce_audio_utils/juce_audio_utils.h>
 #include <juce_box2d/juce_box2d.h>
 #include <juce_core/juce_core.h>
 #include <juce_cryptography/juce_cryptography.h>
@@ -50,7 +48,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "Pulsar";
-    const char* const  companyName    = "";
+    const char* const  companyName    = "The Office of Unspecified Services";
     const char* const  versionString  = "1.0.0";
     const int          versionNumber  = 0x10000;
 }
